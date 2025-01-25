@@ -1,7 +1,6 @@
 package app;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
 import java.util.*;
 
 import javafx.event.ActionEvent;
@@ -14,8 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class IssueBookController {
