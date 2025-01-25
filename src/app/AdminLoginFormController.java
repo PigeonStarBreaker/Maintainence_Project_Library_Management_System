@@ -27,6 +27,9 @@ public class AdminLoginFormController {
     private PasswordField adminPassword;
     
     @FXML
+    private Button back;
+    
+    @FXML
     private Button adminLogbtn;
     ArrayList<Admin> admins = new ArrayList<>();
     @FXML
@@ -58,6 +61,13 @@ public class AdminLoginFormController {
     	stage.setScene(scene);
     	
     	// 
+    }
+    @FXML
+    void back(ActionEvent event) throws IOException {
+    	Parent root = FXMLLoader.load(getClass().getResource("MainView.fxml"));
+    	Scene scene = new Scene(root);
+    	Stage stage = (Stage) back.getScene().getWindow();
+    	stage.setScene(scene);
     }
 
 }

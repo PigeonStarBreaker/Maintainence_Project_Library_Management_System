@@ -35,6 +35,10 @@ public class LibrarianLoginFormController {
 
 	@FXML
 	private Button loginBtn;
+	
+	//VVVVVVVVVVVVVVVV HERE
+	 @FXML
+	 private Button back;
 
 	@FXML
 
@@ -66,4 +70,12 @@ public class LibrarianLoginFormController {
 			alert.showAndWait();
 		}
 	}
+	//VVVVVVVVVVVVV HERE
+	 @FXML
+	    void back(ActionEvent event) throws IOException {
+	    	Parent root = FXMLLoader.load(getClass().getResource("MainView.fxml"));
+	    	Scene scene = new Scene(root);
+	    	Stage stage = (Stage) back.getScene().getWindow();
+	    	stage.setScene(scene);
+	    }
 }

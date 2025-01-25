@@ -1,7 +1,10 @@
 package app;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Random;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,8 +47,6 @@ public class AddLibrarianController {
 
     @FXML
     private TextField libContactNo;
-
-    private Librarian librarian; // reference to a librarian object
     ArrayList<Librarian> listOfLib = new ArrayList<>();
     ArrayList<Librarian> libList = new ArrayList<>();
     Random rand = new Random();
@@ -63,6 +64,7 @@ public class AddLibrarianController {
      */
     @FXML
     public void add(ActionEvent event) throws IOException {
+        Librarian librarian; // move to here
         listOfLib = FileLoader.loadLibrarianFromFile();
         // creates a librarian object from the textField provided in the GUI
         librarian = new Librarian(LibName.getText(), libPass.getText(), libEmail.getText(), libAddress.getText(),
