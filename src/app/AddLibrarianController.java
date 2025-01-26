@@ -64,49 +64,75 @@ public class AddLibrarianController {
      */
     @FXML
     public void add(ActionEvent event) throws IOException {
-        Librarian librarian; // move to here
+    	Librarian librarian; // move to here
         listOfLib = FileLoader.loadLibrarianFromFile();
-        // creates a librarian object from the textField provided in the GUI
+
+        // Validate input fields
+        if (LibName.getText().isEmpty() || libPass.getText().isEmpty() || libEmail.getText().isEmpty() ||
+            LibCity.getText().isEmpty() || libAddress.getText().isEmpty() || libContactNo.getText().isEmpty()) {
+            showError("You have to fill all text fields.");
+            return;
+        }
+
+        // Validate name length
+        if (LibName.getText().length() < 3) {
+            showError("Name must be at least 3 characters long.");
+            return;
+        }
+
+        // Validate email format
+        if (!libEmail.getText().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            showError("Invalid email format. Please enter a valid email address.");
+            return;
+        }
+
+        // Validate password length
+        if (libPass.getText().length() < 8) {
+            showError("Password must be at least 8 characters long.");
+            return;
+        }
+
+        // Validate contact number format (e.g., starts with a digit, 10-15 digits total)
+        if (!libContactNo.getText().matches("^\\+?\\d{10,15}$")) {
+            showError("Invalid contact number. Please enter a valid phone number (10-15 digits).");
+            return;
+        }
+
+        // Create librarian object from the text fields
         librarian = new Librarian(LibName.getText(), libPass.getText(), libEmail.getText(), libAddress.getText(),
                 LibCity.getText(), libContactNo.getText());
 
-        //check if all the text field have been filled. If not, It gives an error message
-        // If all information is entered, the method checks if the librarian is already in the system.
-        // If so, an error message will be displayed
-        if (LibName.getText().equals("") || libPass.getText().equals("") || libEmail.getText().equals("") ||
-                LibCity.getText().equals("") || libAddress.getText().equals("") || libContactNo.getText().equals("")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText(null);
-            alert.setContentText("You have to fill all text fields");
-            alert.show();
-        } else {
-            int id = rand.nextInt(100) + 1;
-            librarian.setID(id);
-            FileOutputStream filename = new FileOutputStream("Librarian.txt");
-            ObjectOutputStream libObj = new ObjectOutputStream(filename);
-            if (listOfLib.isEmpty()) {
-                listOfLib.add(librarian);
-                libObj.writeObject(listOfLib);
-                addedSuccessfully();
-                libObj.close();
-            } else {
-                boolean found = false;
-                for (Librarian lib : listOfLib) {
-                    if (lib.getContactNum().equals(libContactNo.getText())) {
-                        duplicateLibrarian();
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    listOfLib.add(librarian);
-                    libObj.writeObject(listOfLib);
-                    libObj.close();
-                    addedSuccessfully();
-                }
+        int id = rand.nextInt(100) + 1;
+        librarian.setID(id);
+
+        FileOutputStream filename = new FileOutputStream("Librarian.txt");
+        ObjectOutputStream libObj = new ObjectOutputStream(filename);
+
+        // Check if the librarian already exists in the system
+        boolean found = false;
+        for (Librarian lib : listOfLib) {
+            if (lib.getContactNum().equals(libContactNo.getText())) {
+                duplicateLibrarian();
+                found = true;
+                break;
             }
         }
+
+        if (!found) {
+            listOfLib.add(librarian);
+            libObj.writeObject(listOfLib);
+            libObj.close();
+            addedSuccessfully();
+        }
     }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
+    }
+
 
     public void addedSuccessfully() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -130,4 +156,6 @@ public class AddLibrarianController {
         Stage stage = (Stage) backbtn.getScene().getWindow();
         stage.setScene(scene);
     }
+    
 }
+

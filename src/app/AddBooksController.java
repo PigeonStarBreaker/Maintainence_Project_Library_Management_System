@@ -45,41 +45,74 @@ public class AddBooksController {
 	private Button backBtn;
 
 	@FXML
-	void add(ActionEvent event) throws IOException {
-		// make sure there is no empty feild i.e form must be complet
-		Alert alert;
-		if(name.getText().isBlank() || CallNo.getText().isBlank()
-				|| author.getText().isBlank() || publisher.getText().isBlank()
-				|| quantity.getText().isBlank()) {
-			alert = new Alert(Alert.AlertType.ERROR, "All fields must be completed");
-		}
-		else {
-			// make sure quantity is a number
-			int q = 0;
-			try {
-				q = Integer.parseInt(quantity.getText());
-				//create a book from the inputs
-				Book book = new Book(name.getText(), CallNo.getText(),author.getText(),publisher.getText(),q);
-				
-				// get the book data as an array list
-				ArrayList<Book> bookData = getData("src/books.res");
-				
-				// add the new object into the book data
-				bookData.add(book);
-				
-				// store this arrayList
-				storeData(bookData, "src/books.res");
-				
-				alert = new Alert(Alert.AlertType.CONFIRMATION, "Book Added successfully");
-				
-			} catch (NumberFormatException e) {
-				alert = new Alert(Alert.AlertType.ERROR, "Quantity must be an integer");
-			}
-			
-		}
-		alert.showAndWait();
+    void add(ActionEvent event) throws IOException {
+        Alert alert;
 
-	}
+        // Check for empty fields
+        if (name.getText().isBlank() || CallNo.getText().isBlank()
+                || author.getText().isBlank() || publisher.getText().isBlank()
+                || quantity.getText().isBlank()) {
+            alert = new Alert(Alert.AlertType.ERROR, "All fields must be completed.");
+            alert.showAndWait();
+            return;
+        }
+
+        // Validate name (at least 3 alphabetic characters)
+        if (!name.getText().matches("[a-zA-Z]{3,}")) {
+            alert = new Alert(Alert.AlertType.ERROR, "Name must contain at least 3 alphabetic characters.");
+            alert.showAndWait();
+            return;
+        }
+
+        // Validate call number (alphanumeric, minimum 3 characters, no spaces)
+        if (!CallNo.getText().matches("[0-9]{10,}")) {
+            alert = new Alert(Alert.AlertType.ERROR, "Call Number must be alphanumeric and at least 3 characters long.");
+            alert.showAndWait();
+            return;
+        }
+
+        // Validate author name (at least 3 alphabetic characters)
+        if (!author.getText().matches("[a-zA-Z]{3,}")) {
+            alert = new Alert(Alert.AlertType.ERROR, "Author name must contain at least 3 alphabetic characters.");
+            alert.showAndWait();
+            return;
+        }
+
+        // Validate publisher name (at least 3 alphabetic characters)
+        if (!publisher.getText().matches("[a-zA-Z]{3,}")) {
+            alert = new Alert(Alert.AlertType.ERROR, "Publisher name must contain at least 3 alphabetic characters.");
+            alert.showAndWait();
+            return;
+        }
+
+        // Validate quantity (must be a positive integer)
+        int q;
+        try {
+            q = Integer.parseInt(quantity.getText());
+            if (q <= 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
+            alert = new Alert(Alert.AlertType.ERROR, "Quantity must be a positive integer.");
+            alert.showAndWait();
+            return;
+        }
+
+        // Create a book from the inputs
+        Book book = new Book(name.getText(), CallNo.getText(), author.getText(), publisher.getText(), q);
+
+        // Get the book data as an array list
+        ArrayList<Book> bookData = getData("src/books.ser");
+
+        // Add the new object into the book data
+        bookData.add(book);
+
+        // Store this array list
+        storeData(bookData, "src/books.ser");
+
+        alert = new Alert(Alert.AlertType.CONFIRMATION, "Book added successfully.");
+        alert.showAndWait();
+    }
 
 	@FXML
 	void back(ActionEvent event) throws IOException {
